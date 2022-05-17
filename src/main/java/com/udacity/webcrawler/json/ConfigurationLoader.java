@@ -32,9 +32,15 @@ public final class ConfigurationLoader {
    * @return the loaded {@link CrawlerConfiguration}.
    */
   public CrawlerConfiguration load() {
-    // TODO: Fill in this method.
+    CrawlerConfiguration config = null;
+    try (BufferedReader reader = Files.newBufferedReader(path)) {
+      config = read(reader);
+    } catch (IOException e) {
+      System.out.println("Failed to read file from path while loading crawler's config");
+      e.printStackTrace();
+    }
 
-    return new CrawlerConfiguration.Builder().build();
+    return config;
   }
 
   /**

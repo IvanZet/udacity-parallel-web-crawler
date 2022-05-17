@@ -2,9 +2,12 @@ package com.udacity.webcrawler.json;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -77,5 +80,29 @@ public final class ConfigurationLoaderTest {
     assertThat(config.getPopularWordCount()).isEqualTo(5);
     assertThat(config.getProfileOutputPath()).isEmpty();
     assertThat(config.getResultPath()).isEmpty();
+  }
+
+  @Test
+  public void testLoad() {
+    Path pathToFixture = Path.of(System.getProperty("user.dir") +
+            "/src/test/java/com/udacity/webcrawler/json/fixture.json");
+    var configurationLoader = new ConfigurationLoader(pathToFixture);
+    CrawlerConfiguration config = configurationLoader.load();
+
+    assertThat(config.getStartPages()).containsExactly("http://example.com",
+            "http://example.com/foo");
+    assertThat(config.getIgnoredUrls()).hasSize(1);
+    assertThat(config.getIgnoredUrls().get(0).pattern())
+            .isEqualTo("http://example\\.com/.*");
+    assertThat(config.getIgnoredWords()).hasSize(1);
+    assertThat(config.getIgnoredWords().get(0).pattern()).isEqualTo("^.{1,3}$");
+    assertThat(config.getParallelism()).isEqualTo(4);
+    assertThat(config.getImplementationOverride())
+            .isEqualTo("com.udacity.webcrawler.SequentialWebCrawler");
+    assertThat(config.getMaxDepth()).isEqualTo(10);
+    assertThat(config.getTimeout()).isEqualTo(Duration.ofSeconds(2));
+    assertThat(config.getPopularWordCount()).isEqualTo(3);
+    assertThat(config.getProfileOutputPath()).isEqualTo("profileData.txt");
+    assertThat(config.getResultPath()).isEqualTo("crawlResults.json");
   }
 }
