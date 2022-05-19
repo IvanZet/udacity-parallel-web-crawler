@@ -85,7 +85,7 @@ public final class ConfigurationLoaderTest {
   @Test
   public void testLoad() {
     Path pathToFixture = Path.of(System.getProperty("user.dir") +
-            "/src/test/java/com/udacity/webcrawler/json/fixture.json");
+            "/src/test/java/com/udacity/webcrawler/json/config-fixture.json");
     var configurationLoader = new ConfigurationLoader(pathToFixture);
     CrawlerConfiguration config = configurationLoader.load();
 
