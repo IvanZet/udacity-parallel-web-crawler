@@ -58,9 +58,10 @@ final class ProfilerImpl implements Profiler {
 
   @Override
   public void writeData(Path path) throws IOException {
-    BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8,
-            StandardOpenOption.APPEND);
-    writeData(writer);
+    try(BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+      writeData(writer);
+    }
   }
 
   @Override
