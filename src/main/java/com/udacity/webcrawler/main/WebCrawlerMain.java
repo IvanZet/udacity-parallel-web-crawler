@@ -11,9 +11,7 @@ import com.udacity.webcrawler.profiler.Profiler;
 import com.udacity.webcrawler.profiler.ProfilerModule;
 
 import javax.inject.Inject;
-import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -37,7 +35,7 @@ public final class WebCrawlerMain {
     CrawlResult result = crawler.crawl(config.getStartPages());
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
     String resultPathString = config.getResultPath();
-    if (resultPathString != "") {
+    if (! resultPathString.equals("")) {
       Path resultPath = Path.of(resultPathString);
       resultWriter.write(resultPath);
     } else {
@@ -47,7 +45,7 @@ public final class WebCrawlerMain {
     }
 
     String profileOutputString = config.getProfileOutputPath();
-    if (profileOutputString != "") {
+    if (! profileOutputString.equals("")) {
       Path profileOutputPath = Path.of(profileOutputString);
       profiler.writeData(profileOutputPath);
     } else {
