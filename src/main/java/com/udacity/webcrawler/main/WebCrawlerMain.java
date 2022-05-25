@@ -41,8 +41,9 @@ public final class WebCrawlerMain {
       Path resultPath = Path.of(resultPathString);
       resultWriter.write(resultPath);
     } else {
-      var standardOutputWriter = new OutputStreamWriter(System.out);
-      resultWriter.write(standardOutputWriter);
+      try (var standardOutputWriter = new OutputStreamWriter(System.out)) {
+        resultWriter.write(standardOutputWriter);
+      }
     }
 
     String profileOutputString = config.getProfileOutputPath();
@@ -50,8 +51,10 @@ public final class WebCrawlerMain {
       Path profileOutputPath = Path.of(profileOutputString);
       profiler.writeData(profileOutputPath);
     } else {
-      var standardOutputWriter = new OutputStreamWriter(System.out);
-      profiler.writeData(standardOutputWriter);
+      // FIXME: Why nothing goes to console if crawl result was also written there?
+      try (var standardOutputWriter = new OutputStreamWriter(System.out)) {
+        profiler.writeData(standardOutputWriter);
+      }
     }
   }
 
