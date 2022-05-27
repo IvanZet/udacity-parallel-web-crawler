@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public final class CrawlResultWriterTest {
   @Test
@@ -51,7 +52,6 @@ public final class CrawlResultWriterTest {
     assertThat(written).matches(expected);
   }
 
-  // FIXME: tests assumes that in SUT, data not appended, but overwritten
   @Test
   public void testBasicJsonFormattingPath() throws Exception {
     Map<String, Integer> counts = new LinkedHashMap<>();
@@ -64,12 +64,12 @@ public final class CrawlResultWriterTest {
                     .setWordCounts(counts)
                     .build();
     Path writePath = Path.of(System.getProperty("user.dir") +
-            "/src/test/java/com/udacity/webcrawler/json/crawl-result.json");
+            "/src/test/java/com/udacity/webcrawler/json/crawl-result.txt");
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
     resultWriter.write(writePath);
     // Expected written data
     Path fixturePath = Path.of(System.getProperty("user.dir") +
-            "/src/test/java/com/udacity/webcrawler/json/crawl-result-fixture.json");
+            "/src/test/java/com/udacity/webcrawler/json/crawl-result-fixture.txt");
     // Compare SUTs output and fixture
     Object written;
     Object fixture;
@@ -80,5 +80,9 @@ public final class CrawlResultWriterTest {
       fixture = objectMapper.readValue(reader2, Object.class);
     }
     assertThat(written).isEqualTo(fixture);
+    // Restore initial crawl-result.txt
+    Path initWritePath = Path.of(System.getProperty("user.dir") +
+            "/src/test/java/com/udacity/webcrawler/json/crawl-result-init.txt");
+    Files.copy(initWritePath, writePath, REPLACE_EXISTING);
   }
 }

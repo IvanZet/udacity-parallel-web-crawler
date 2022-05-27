@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 /**
@@ -27,14 +28,14 @@ public final class CrawlResultWriter {
   /**
    * Formats the {@link CrawlResult} as JSON and writes it to the given {@link Path}.
    *
-   * FIXME: data not appended yet, but overwritten
    * <p>If a file already exists at the path, the existing file should not be deleted; new data
    * should be appended to it.
    *
    * @param path the file path where the crawl result data should be written.
    */
   public void write(Path path) {
-    try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
       write(writer);
     } catch (IOException e) {
       System.out.println("Failed to write crawling result to file");
