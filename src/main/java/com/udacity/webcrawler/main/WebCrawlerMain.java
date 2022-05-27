@@ -35,22 +35,20 @@ public final class WebCrawlerMain {
     CrawlResult result = crawler.crawl(config.getStartPages());
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
     String resultPathString = config.getResultPath();
-    if (! resultPathString.equals("")) {
-      Path resultPath = Path.of(resultPathString);
-      resultWriter.write(resultPath);
-    } else {
-      try (var standardOutputWriter = new OutputStreamWriter(System.out)) {
-        resultWriter.write(standardOutputWriter);
-      }
-    }
 
-    String profileOutputString = config.getProfileOutputPath();
-    if (! profileOutputString.equals("")) {
-      Path profileOutputPath = Path.of(profileOutputString);
-      profiler.writeData(profileOutputPath);
-    } else {
-      // FIXME: Why nothing goes to console if crawl result was also written there?
-      try (var standardOutputWriter = new OutputStreamWriter(System.out)) {
+    try (var standardOutputWriter = new OutputStreamWriter(System.out)) {
+      if (! resultPathString.equals("")) {
+        Path resultPath = Path.of(resultPathString);
+        resultWriter.write(resultPath);
+      } else {
+          resultWriter.write(standardOutputWriter);
+          standardOutputWriter.write(System.lineSeparator());
+      }
+      String profileOutputString = config.getProfileOutputPath();
+      if (! profileOutputString.equals("")) {
+        Path profileOutputPath = Path.of(profileOutputString);
+        profiler.writeData(profileOutputPath);
+      } else {
         profiler.writeData(standardOutputWriter);
       }
     }
